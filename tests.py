@@ -1,12 +1,10 @@
 import unittest
 import threading
-import requests
+import http.client
 import json
-
-# Import your Application class and other necessary modules
 from http.server import HTTPServer
-from app import Application 
-from db.initialize import ProductPriceTable
+from app import Application
+
 
 class TestApplication(unittest.TestCase):
     @classmethod
@@ -25,20 +23,34 @@ class TestApplication(unittest.TestCase):
         cls.httpd.shutdown()
 
     def test_do_POST_valid_request(self):
-        data = {'components': ['component1', 'component2']}
-        response = requests.post('http://localhost:8000/orders', json=data)
-        self.assertEqual(response.status_code, 200)
-        response_data = response.json()
-        self.assertIn('order_id', response_data)
-        self.assertIn('total', response_data)
-        self.assertIn('parts', response_data)
+        data = {'components': ["A", "F", "I", "D", "K"]}
+        conn = http.client.HTTPConnection('localhost', 8000)
+        headers = {'Content-type': 'application/json'}
+        conn.request('POST', '/orders', json.dumps(data), headers)
+        response = conn.getresponse()
 
+        self.assertEqual(response.status, 200)
+        response_data = json.loads(response.read().decode('utf-8'))
+        self.assertIn('order_id', response_data)
+        self.assertEqual(response_data['total'], 142.3)
+        self.assertEqual(
+            response_data['parts'], [
+                'LED screen',
+                'USB-C Port',
+                'Android OS',
+                'Wide-Angle Camera',
+                'Metallic Body'
+            ])
 
     def test_do_POST_invalid_endpoint(self):
-        response = requests.post('http://localhost:8000/invalid_endpoint')
-        self.assertEqual(response.status_code, 404)
-        response_data = response.json()
+        conn = http.client.HTTPConnection('localhost', 8000)
+        conn.request('POST', '/invalid_endpoint')
+        response = conn.getresponse()
+
+        self.assertEqual(response.status, 404)
+        response_data = json.loads(response.read().decode('utf-8'))
         self.assertIn('error', response_data)
+
 
 if __name__ == '__main__':
     unittest.main()
