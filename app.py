@@ -2,16 +2,17 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import uuid
 from db.initialize import ProductPriceTable
-import pdb
+
 
 product_price_table = ProductPriceTable()
+
+
 class Application(BaseHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def do_POST(self):
         if self.path == '/orders':
-            pdb.set_trace()
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             data = json.loads(post_data)
@@ -42,13 +43,18 @@ class Application(BaseHTTPRequestHandler):
             self.send_response(404)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps({'error': 'invalid endpoint'}).encode())
+            self.wfile.write(json.dumps(
+                {
+                    'error': 'invalid endpoint'
+                }).encode())
+
 
 def run(server_class=HTTPServer, handler_class=Application, port=8000):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print(f'Starting server on port {port}...')
     httpd.serve_forever()
+
 
 if __name__ == '__main__':
     run()
