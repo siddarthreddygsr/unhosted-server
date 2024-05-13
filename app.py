@@ -1,10 +1,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import uuid
-from db.initialize import ProductPriceTable
-
+from db.initialize import ProductPriceTable, OrdersTable
 
 product_price_table = ProductPriceTable()
+orders_table = OrdersTable()
 
 
 class Application(BaseHTTPRequestHandler):
@@ -34,7 +34,11 @@ class Application(BaseHTTPRequestHandler):
                 "total": total_price,
                 "parts": parts
             }
-
+            orders_table.add_entry(
+                order_id=order_id,
+                total_price=total_price,
+                parts=parts,
+            )
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
@@ -47,6 +51,14 @@ class Application(BaseHTTPRequestHandler):
                 {
                     'error': 'invalid endpoint'
                 }).encode())
+
+    def do_GET(self):
+        if self.path == "/get_orders":
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            data = orders_table.show_data()
+            self.wfile.write(json.dumps(data).encode())
 
 
 def run(server_class=HTTPServer, handler_class=Application, port=8000):
