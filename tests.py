@@ -4,6 +4,8 @@ import http.client
 import json
 from http.server import HTTPServer
 from app import Application
+import tempfile
+import sys
 
 
 class TestApplication(unittest.TestCase):
@@ -41,7 +43,17 @@ class TestApplication(unittest.TestCase):
                 'Wide-Angle Camera',
                 'Metallic Body'
             ])
+    def test_do_POST_invalid_components(self):
+        data = {'components': ["A", "B", "I", "D", "K"]}
+        conn = http.client.HTTPConnection('localhost', 8000)
+        headers = {'Content-type': 'application/json'}
+        conn.request('POST', '/orders', json.dumps(data), headers)
+        response = conn.getresponse()
 
+        self.assertEqual(response.status, 200)
+        response_data = json.loads(response.read().decode('utf-8'))
+        self.assertEqual(response_data['error'], 'invalid choice of parts')
+        
     def test_do_POST_invalid_endpoint(self):
         conn = http.client.HTTPConnection('localhost', 8000)
         conn.request('POST', '/invalid_endpoint')

@@ -26,9 +26,15 @@ Content-Type: application/json
 ### Response:
 ```
 {
-    "order_id": "27a7c447a2f44699bf07fb0073d701f1",
-    "total": 150.0,
-    "parts": ["LED screen", "Touchpad", "Keyboard", "Battery", "Charger"]
+    "order_id": "2b00fef73de84b5d9f7284dccdeafcb1",
+    "total": 142.3,
+    "parts": [
+        "LED screen",
+        "Wide-Angle Camera",
+        "USB-C Port",
+        "Android OS",
+        "Metallic Body"
+    ]
 }
 ```
 ### Request:
@@ -74,14 +80,26 @@ Host: localhost:8000
 ```
 [
     {
-        "order_id": "27a7c447a2f44699bf07fb0073d701f1",
-        "total": 150.0,
-        "parts": ["LED screen", "Touchpad", "Keyboard", "Battery", "Charger"]
+        "order_id": "2b00fef73de84b5d9f7284dccdeafcb1",
+        "total": 142.3,
+        "parts": [
+            "LED screen",
+            "Wide-Angle Camera",
+            "USB-C Port",
+            "Android OS",
+            "Metallic Body"
+        ]
     },
     {
-        "order_id": "8bbfce3f16a1493bb740d0b4b4217d53",
-        "total": 180.0,
-        "parts": ["OLED screen", "Trackpad", "Mouse", "Adapter", "Cable"]
+        "order_id": "5060dfd254e84d0bb87676d2e3dddf23",
+        "total": 162.54,
+        "parts": [
+            "OLED screen",
+            "Ultra-Wide-Angle Camera",
+            "USB-C Port",
+            "Android OS",
+            "Metallic Body"
+        ]        
     }
 ]
 ```
