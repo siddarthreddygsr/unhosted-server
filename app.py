@@ -74,6 +74,14 @@ class Application(BaseHTTPRequestHandler):
             self.end_headers()
             data = orders_table.show_data()
             self.wfile.write(json.dumps(data).encode())
+        else:
+            self.send_response(404)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(
+                {
+                    'error': 'invalid endpoint'
+                }).encode())
 
 
 def run(server_class=HTTPServer, handler_class=Application, port=8000):
